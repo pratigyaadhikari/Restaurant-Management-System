@@ -5,11 +5,18 @@ from django.contrib.auth.models import User
 class Category(models.Model):
     name = models.CharField(max_length=100)
     
+    def __str__(self):
+        return self.name
+    
+    
 class Food(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField()
     price = models.IntegerField()
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    
+    def __str__(self):
+        return f"{self.name} - Rs.{self.price}"
     
 class Table(models.Model):
     number = models.CharField(max_length=2)
@@ -30,6 +37,8 @@ class Order(models.Model):
     total_price = models.IntegerField()
     status = models.CharField(max_length=1, choices=STATUS_CHOICE, default='P') 
     payment_status = models.CharField(max_length=1, choices=PAYMENT_STATUS, default='U') 
+    
+   
     
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.PROTECT)
