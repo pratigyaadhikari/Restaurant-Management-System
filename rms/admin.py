@@ -15,7 +15,12 @@ class FoodAdmin(admin.ModelAdmin):
     list_per_page = 10
 
 
-admin.site.register(Table)
+@admin.register(Table)
+class TableAdmin(admin.ModelAdmin):
+    list_display = ['id','number','capacity','is_available']
+    list_filter = ['is_available']
+    search_fields = ['number']
+    list_per_page = 10
 
 
 class OrderItemInline(admin.TabularInline):
@@ -37,5 +42,19 @@ class OrderItemAdmin(admin.ModelAdmin):
     search_fields = ['food__name']
     list_per_page = 10
 admin.site.register(OrderItem,OrderItemAdmin)
-admin.site.register(Payment)
-admin.site.register(Reservation)
+
+
+@admin.register(Payment)
+class PaymentAdmin(admin.ModelAdmin):
+    list_display = ['id','order','payment_method']
+    list_filter = ['payment_method']
+    search_fields = ['order__id']
+    list_per_page = 10
+
+
+@admin.register(Reservation)
+class ReservationAdmin(admin.ModelAdmin):
+    list_display = ['id','user','table','time','total_users']
+    list_filter = ['table']
+    search_fields = ['user__username']
+    list_per_page = 10

@@ -23,6 +23,9 @@ class Table(models.Model):
     capacity = models.CharField(max_length=2)
     is_available = models.BooleanField(default=True)
     
+    def __str__(self):
+        return f"Table {self.number}"
+    
 class Order(models.Model):
     STATUS_CHOICE = [
         ('P','Pending'),
@@ -38,11 +41,17 @@ class Order(models.Model):
     status = models.CharField(max_length=1, choices=STATUS_CHOICE, default='P') 
     payment_status = models.CharField(max_length=1, choices=PAYMENT_STATUS, default='U') 
     
+    def __str__(self):
+        return f"Order {self.id} - {self.user.username}"
+    
    
     
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.PROTECT)
     food = models.ForeignKey(Food, on_delete=models.PROTECT)
+    
+    def __str__(self):
+        return f"{self.food.name} in Order {self.order.id}"
     
 class Payment(models.Model):
     PAYMENT_METHOD = [
@@ -53,9 +62,15 @@ class Payment(models.Model):
     ]
     order = models.ForeignKey(Order,on_delete=models.CASCADE)
     payment_method = models.CharField(max_length=1,choices=PAYMENT_METHOD)
+    
+    def __str__(self):
+        return f"Payment for Order {self.order.id}"
  
 class Reservation(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     table = models.ForeignKey(Table, on_delete=models.CASCADE)
     time = models.DateTimeField()
     total_users = models.IntegerField()    
+    
+    def __str__(self):
+        return f"{self.user.username} reserved Table {self.table.number}"
