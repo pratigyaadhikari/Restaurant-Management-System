@@ -9,3 +9,4 @@ class TableSerializer(serializers.Serializer):
     number = serializers.CharField()
     capacity = serializers.CharField()
     is_available = serializers.BooleanField()
+    
