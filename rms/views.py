@@ -32,9 +32,28 @@ def category_detail(request, id):
         
     
     
-
 @api_view(['GET','POST'])
 def table(request):
-    table = Table.objects.all()
-    serializer = TableSerializer(table, many=True)    #serialize: to convert queryset to json format
-    return Response(serializer.data)
+    if request.method == 'GET':
+        table = Table.objects.all()
+        serializer = TableSerializer(table, many=True)    #serialize: to convert queryset to json format
+        return Response(serializer.data)
+    elif request.method == 'POST':
+        serializer = TableSerializer(data = request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
+    
+@api_view(['GET','POST'])
+def table_detail(request, id):
+    table = Table.objects.get(id = id)
+    if request.method == 'GET':
+        serializer = TableSerializer(table)
+        return Response(serializer.data)
+    elif request.method == 'POST':
+        serializer = TableSerializer(table, data = request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
+        
+
