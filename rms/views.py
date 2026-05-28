@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-from .models import Category, Table
+from .models import Category, Table, OrderItem
 from .serializer import CategorySerializer, TableSerializer
 
 
@@ -18,7 +18,7 @@ def category(request):
         serializer.save()
         return Response(serializer.data)
     
-@api_view(['GET','POST'])
+@api_view(['GET','POST','DELETE'])
 def category_detail(request, id):
     category = Category.objects.get(id = id)
     if request.method == 'GET':
@@ -29,7 +29,12 @@ def category_detail(request, id):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data)
-        
+    elif request.method == 'DELETE':
+        items = OrderItem.objects.filter(food__category = category).count()
+        if items > 0:
+            return Response({"detail":"category cannoy be deleted. Protected in OrderItem"})
+        category.delete()
+        return Response({"detail": "Category deleted successfully"})
     
     
 @api_view(['GET','POST'])
@@ -55,5 +60,6 @@ def table_detail(request, id):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data)
+    
         
 
