@@ -22,9 +22,7 @@ class CategoryGenericAPIView(generics.GenericAPIView, mixins.ListModelMixin, mix
         
     def post(self, request):
         return self.create(request)
-    
-    
-    
+        
 class CategoryDetail(generics.GenericAPIView, mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixins.DestroyModelMixin):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
@@ -33,11 +31,59 @@ class CategoryDetail(generics.GenericAPIView, mixins.RetrieveModelMixin, mixins.
     def get(self,request,id):       #id = pk rakhni
         return self.retrieve(request, id)
     
+    def post(self,request,id):
+        return self.update(request, id)
     
-   
+    def delete(self,request,id):
+        return self.delete(request,id)
+    
+    #table   
+class TableGenericAPIView(generics.GenericAPIView, mixins.ListModelMixin, mixins.CreateModelMixin):
+    queryset = Table.objects.all()
+    serializer_class = TableSerializer
+    
+    def get(self,request):
+        return self.list(request)       
+        
+    def post(self, request):
+        return self.create(request)
+        
+class TableDetail(generics.GenericAPIView, mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixins.DestroyModelMixin):
+    queryset = Table.objects.all()
+    serializer_class = TableSerializer
+    lookup_field = 'id'
+    # (if lookup field use gardina vaneni , we can use pk)
+    def get(self,request,id):       #id = pk rakhni
+        return self.retrieve(request, id)
+    
+    def post(self,request,id):
+        return self.update(request, id)
 
+    def delete(self,request,id):
+        return self.delete(request,id)
+    
+    
 
+# Mixins kai concrete view classes, genericAPI
+# from rest_framework import mixins, generics
+ 
+# from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 
+# class CategoryGenericAPIView(ListCreateAPIView):
+#     queryset = Category.objects.all()
+#     serializer_class = CategorySerializer
+    
+# class CategoryDetail(RetrieveUpdateDestroyAPIView):
+#     queryset = Category.objects.all()
+#     serializer_class = CategorySerializer
+    
+#     def delete(self, request,pk):
+#         items = OrderItem.objects.filter(food__category = self.get_object).count()
+#         if items > 0:
+#             return Response({"details":"category cannot be deleted. Protected in OrderItem"})
+#         self.get_object().delete()
+#         return Response({"details":"Category deleted successfully"})
+    
 
 
 # Class Based: APIView
