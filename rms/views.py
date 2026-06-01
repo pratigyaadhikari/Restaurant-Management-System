@@ -2,65 +2,139 @@ from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from .models import Category, Table, OrderItem
-from .serializer import CategorySerializer, TableSerializer
+# from .serializer import CategorySerializer, TableSerializer
+from .serializer import CategoryModelSerializer, TableModelSerializer
 
 
 # Create your views here.
+from rest_framework import viewsets
+# Model viewset:
+
+class CategoryModelViewset(viewsets.ModelViewSet):
+    queryset = Category.objects.all()
+    serializer_class = CategoryModelSerializer
+    
+    def destroy(self, request, pk):
+        category =  Category.objects.get(pk = pk)
+        items = OrderItem.objects.filter(food__category = category).count()
+        if items > 0:
+            return Response({"details":"category cannot be deleted. Protected in OrderItem"})
+        category.delete()
+        return Response({"details":"Category deleted successfully"})
+    
+    
+    
+class TableModelViewset(viewsets.ModelViewSet):
+    queryset = Table.objects.all()
+    serializer_class = TableModelSerializer
+    
+    
+
+# Viewset:
+
+# class CategoryViewset(viewsets.ViewSet):
+#     def list(self, request):         
+#         category = Category.objects.all()
+#         serializer = CategorySerializer(category, many = True)
+#         return Response(serializer.data)
+    
+#     def create(self, request):
+#         serializer = CategorySerializer(data = request.data)    #deserialize: json format convert to model instance
+#         serializer.is_valid(raise_exception=True)
+#         serializer.save()
+#         return Response(serializer.data)
+        
+    
+# class CategoryDetailViewset(viewsets.ViewSet):
+#     def retrieve(self, request, pk):
+#         category = Category.objects.get(pk = pk)
+#         serializer = CategorySerializer(category)
+#         return Response(serializer.data) 
+#     def update(self, request, pk):
+#         category = Category.objects.get(pk = pk)
+#         serializer = CategorySerializer(category, data = request.data)
+#         serializer.is_valid(raise_exception=True)
+#         serializer.save()
+#         return Response(serializer.data)
+#     def partial_update(self,request,pk):
+#         category = Category.objects.get(pk = pk)
+#         serializer = CategorySerializer(category, data = request.data, partial = True)
+#         serializer.is_valid(raise_exception=True)
+#         serializer.save()
+#         return Response(serializer.data)        
+#     def destroy(self, request, pk):
+#         category =  Category.objects.get(pk = pk)
+#         items = OrderItem.objects.filter(food__category = category).count()
+#         if items > 0:
+#             return Response({"details":"category cannot be deleted. Protected in OrderItem"})
+#         category.delete()
+#         return Response({"details":"Category deleted successfully"})
+    
+    
+
+
 # Mixins:
-from rest_framework import mixins, generics
+# from rest_framework import mixins, generics
 
-class CategoryGenericAPIView(generics.GenericAPIView, mixins.ListModelMixin, mixins.CreateModelMixin):
-    queryset = Category.objects.all()
-    serializer_class = CategorySerializer
+# class CategoryGenericAPIView(generics.GenericAPIView, mixins.ListModelMixin, mixins.CreateModelMixin):
+#     queryset = Category.objects.all()
+#     serializer_class = CategorySerializer
     
-    def get(self,request):
-        return self.list(request)       #if useing mixin yo line matra lekhda vo insted of mathi ko 3 ota line code
+#     def get(self,request):
+#         return self.list(request)       #if useing mixin yo line matra lekhda vo insted of mathi ko 3 ota line code
         
-        # category = Category.objects.all()
-        # serializer = CategorySerializer(category, many = True)
-        # return Response(serializer.data)
+#         # category = Category.objects.all()
+#         # serializer = CategorySerializer(category, many = True)
+#         # return Response(serializer.data)
         
-    def post(self, request):
-        return self.create(request)
+#     def post(self, request):
+#         return self.create(request)
         
-class CategoryDetail(generics.GenericAPIView, mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixins.DestroyModelMixin):
-    queryset = Category.objects.all()
-    serializer_class = CategorySerializer
-    lookup_field = 'id'
-    # (if lookup field use gardina vaneni , we can use pk)
-    def get(self,request,id):       #id = pk rakhni
-        return self.retrieve(request, id)
+# class CategoryDetail(generics.GenericAPIView, mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixins.DestroyModelMixin):
+#     queryset = Category.objects.all()
+#     serializer_class = CategorySerializer
+#     # lookup_field = 'id'
+#     # (if lookup field use gardina vaneni , we can use pk)
+#     def get(self,request,pk):       #id = pk rakhni
+#         return self.retrieve(request, pk)
     
-    def post(self,request,id):
-        return self.update(request, id)
+#     def post(self,request,pk):
+#         return self.update(request, pk)
     
-    def delete(self,request,id):
-        return self.delete(request,id)
+#     def delete(self,request,pk):
+#         category =  Category.objects.get(id = pk)
+#         items = OrderItem.objects.filter(food__category = category).count()
+#         if items > 0:
+#             return Response({"details":"category cannot be deleted. Protected in OrderItem"})
+#         category.delete()
+#         return Response({"details":"Category deleted successfully"})      
     
-    #table   
-class TableGenericAPIView(generics.GenericAPIView, mixins.ListModelMixin, mixins.CreateModelMixin):
-    queryset = Table.objects.all()
-    serializer_class = TableSerializer
+#     #table   
+# class TableGenericAPIView(generics.GenericAPIView, mixins.ListModelMixin, mixins.CreateModelMixin):
+#     queryset = Table.objects.all()
+#     serializer_class = TableSerializer
     
-    def get(self,request):
-        return self.list(request)       
+#     def get(self,request):
+#         return self.list(request)       
         
-    def post(self, request):
-        return self.create(request)
+#     def post(self, request):
+#         return self.create(request)
         
-class TableDetail(generics.GenericAPIView, mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixins.DestroyModelMixin):
-    queryset = Table.objects.all()
-    serializer_class = TableSerializer
-    lookup_field = 'id'
-    # (if lookup field use gardina vaneni , we can use pk)
-    def get(self,request,id):       #id = pk rakhni
-        return self.retrieve(request, id)
+# class TableDetail(generics.GenericAPIView, mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixins.DestroyModelMixin):
+#     queryset = Table.objects.all()
+#     serializer_class = TableSerializer
+#     lookup_field = 'id'
+#     # (if lookup field use gardina vaneni , we can use pk)
+#     def get(self,request,id):       #id = pk rakhni
+#         return self.retrieve(request, id)
     
-    def post(self,request,id):
-        return self.update(request, id)
+#     def post(self,request,id):
+#         return self.update(request, id)
 
-    def delete(self,request,id):
-        return self.delete(request,id)
+#     def delete(self,request,id):
+#         table = Table.objects.get(id = id)
+#         table.delete()
+#         return Response({"detail": "table deleted successfully"})
     
     
 
