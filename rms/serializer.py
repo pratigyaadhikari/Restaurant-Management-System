@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Category, Table
+from .models import Category, Table, Food
 
 
 class CategoryModelSerializer(serializers.ModelSerializer):
@@ -9,11 +9,43 @@ class CategoryModelSerializer(serializers.ModelSerializer):
         fields = ['id','name']
         # exclude = ['name']      #yo bahek aru lai serialize garni
         
+    def save(self, **kwargs):
+        validated_data= self.validated_data  
+        category =  Category.objects.filter(name = validated_data.get('name')).count()
+        if category > 0:
+            raise serializers.ValidationError({"name":"Category with this name already exists."})
+        return super().save(**kwargs)
+
+        # def create(self, validated_data):
+        #     category =  Category.objects.filter(name = validated_data.get('name')).count()
+        #     if category > 0:
+        #         raise serializers.ValidationError({"name":"Category with this name already exists."})
+        #     return super().create(validated_data)
+    
+    
+        
 class TableModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = Table
         fields = '__all__'
-
+        
+class FoodModelSerializer(serializers.ModelSerializer):
+    category_id = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all())
+    category = serializers.StringRelatedField()
+    price_with_vat = serializers.SerializerMethodField()
+    price_with_discount = serializers.SerializerMethodField()
+    
+    class Meta:
+        model = Food
+        # fields = '__all__'
+        fields = ['id','name','description','price','price_with_vat','price_with_discount','category_id','category']    
+        
+    def get_price_with_vat(self,food:Food):
+        return food.price * 0.13 + food.price
+    
+    def get_price_with_discount(self, food:Food):
+        return food.price * 0.30 + food.price
+    
 # class CategorySerializer(serializers.Serializer):
     # id = serializers.IntegerField(read_only = True)
     # name = serializers.CharField()

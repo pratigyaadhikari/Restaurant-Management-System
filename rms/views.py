@@ -1,9 +1,9 @@
 from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-from .models import Category, Table, OrderItem
+from .models import Category, Table, OrderItem, Food
 # from .serializer import CategorySerializer, TableSerializer
-from .serializer import CategoryModelSerializer, TableModelSerializer
+from .serializer import CategoryModelSerializer, TableModelSerializer, FoodModelSerializer
 
 
 # Create your views here.
@@ -22,13 +22,16 @@ class CategoryModelViewset(viewsets.ModelViewSet):
         category.delete()
         return Response({"details":"Category deleted successfully"})
     
-    
-    
+     
 class TableModelViewset(viewsets.ModelViewSet):
     queryset = Table.objects.all()
     serializer_class = TableModelSerializer
     
     
+class FoodModelviewset(viewsets.ModelViewSet):  
+    queryset = Food.objects.all()
+    serializer_class = FoodModelSerializer
+      
 
 # Viewset:
 
