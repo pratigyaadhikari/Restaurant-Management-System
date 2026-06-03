@@ -9,7 +9,7 @@ class CategoryModelSerializer(serializers.ModelSerializer):
         fields = ['id','name']
         # exclude = ['name']      #yo bahek aru lai serialize garni
         
-    def save(self, **kwargs):
+    def save(self, **kwargs):   #esla update ra create ko lagi kam garxa update ra create garda duplicate hudna dedina
         validated_data= self.validated_data  
         category =  Category.objects.filter(name = validated_data.get('name')).count()
         if category > 0:

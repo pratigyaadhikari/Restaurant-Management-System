@@ -4,8 +4,10 @@ from rest_framework.decorators import api_view
 from .models import Category, Table, OrderItem, Food
 # from .serializer import CategorySerializer, TableSerializer
 from .serializer import CategoryModelSerializer, TableModelSerializer, FoodModelSerializer
-
-
+from .pagination import CategoryPagination, TablePagination, FoodPagination
+from rest_framework import filters
+from django_filters.rest_framework import DjangoFilterBackend
+from .filter import FoodFilter
 # Create your views here.
 from rest_framework import viewsets
 # Model viewset:
@@ -13,6 +15,7 @@ from rest_framework import viewsets
 class CategoryModelViewset(viewsets.ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategoryModelSerializer
+    pagination_class = CategoryPagination
     
     def destroy(self, request, pk):
         category =  Category.objects.get(pk = pk)
@@ -26,13 +29,18 @@ class CategoryModelViewset(viewsets.ModelViewSet):
 class TableModelViewset(viewsets.ModelViewSet):
     queryset = Table.objects.all()
     serializer_class = TableModelSerializer
-    
+    pagination_class = TablePagination
     
 class FoodModelviewset(viewsets.ModelViewSet):  
-    queryset = Food.objects.all()
+    queryset = Food.objects.select_related('category').all()
     serializer_class = FoodModelSerializer
-      
-
+    pagination_class = FoodPagination
+    filter_backends = [filters.SearchFilter,DjangoFilterBackend]
+    search_fields = ['name']    #if tuple ('name',) ma name rakhni ho vane euta field matra rakhda field paxi (,) yo rakhni dherai vayo vane rakhna pardaina ('name','price')
+    # filterset_fields = ['category']   #if  class create nagare fields ma directly add garna this one
+    filterset_class = FoodFilter #manually class create garexa vane yo use garni
+    
+    
 # Viewset:
 
 # class CategoryViewset(viewsets.ViewSet):
