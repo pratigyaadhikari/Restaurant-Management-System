@@ -49,6 +49,8 @@ INSTALLED_APPS = [
     "debug_toolbar",
     'django_filters',
     
+    'drf_spectacular',
+    
     ]
 
 MIDDLEWARE = [
@@ -145,5 +147,14 @@ REST_FRAMEWORK = {
 #     # 'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
 #     'PAGE_SIZE': 5
     'DEFAULT_AUTHENTICATION_CLASSES': [
-            'rest_framework.authentication.TokenAuthentication']
+            'rest_framework.authentication.TokenAuthentication'],
+    
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'RMS API',
+    'DESCRIPTION': 'Restaurant Management System',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
 }

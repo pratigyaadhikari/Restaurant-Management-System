@@ -3,11 +3,14 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from .models import Category, Table, OrderItem, Food
 # from .serializer import CategorySerializer, TableSerializer
-from .serializer import CategoryModelSerializer, TableModelSerializer, FoodModelSerializer
+from .serializers import CategoryModelSerializer, TableModelSerializer, FoodModelSerializer
 from .pagination import CategoryPagination, TablePagination, FoodPagination
 from rest_framework import filters
 from django_filters.rest_framework import DjangoFilterBackend
 from .filter import FoodFilter
+
+from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiExample
+from drf_spectacular.types import OpenApiTypes
 
 # from rest_framework.permissions import IsAuthenticatedOrReadOnly #(IsAuthenticated)
 from .permissions import IsAuth
@@ -18,9 +21,16 @@ from rest_framework import viewsets
 class CategoryModelViewset(viewsets.ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategoryModelSerializer
-    pagination_class = CategoryPagination
+    # pagination_class = CategoryPagination
     
     permission_classes = [IsAuth]
+    
+    @extend_schema(
+        parameters=[OpenApiParameter(name='name', description='Name of the category', type=OpenApiTypes.STR)],
+        description='This handles category list',
+    )
+    def list(self,request,*args,**kwargs):
+        return super().list(request, *args, **kwargs)
     
     def destroy(self, request, pk):
         category =  Category.objects.get(pk = pk)

@@ -3,9 +3,24 @@ from rest_framework.views import APIView
 from django.contrib.auth import authenticate
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
+from .serializers import UserSerializer
+
+from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiExample
+from drf_spectacular.types import OpenApiTypes
 # Create your views here.
 
 class LoginViewset(APIView):
+    # @extend_schema(
+    #     parameters=[OpenApiParameter(name='username', description='Username of the user', type=OpenApiTypes.STR),
+    #     OpenApiParameter(name='password', description='password of the user', type=OpenApiTypes.STR)],
+    #     description='This handles user authentication',
+    # )
+    @extend_schema(
+        request=UserSerializer,
+        # responses={201: AlbumSerializer},
+    )
+    
+    
     def post(self, request):
         username = request.data.get('username')
         password = request.data.get('password')
