@@ -10,6 +10,7 @@ router.register('category', CategoryModelViewset, basename='category')
 # router.register('category', CategoryDetailViewset, basename='category-detail')
 router.register('table', TableModelViewset, basename='table' )
 router.register('food',FoodModelviewset, basename='food')
+router.register('order',OrderModelviewset,basename='order')
 urlpatterns = [
     # viewset:
     # path('category/',CategoryViewset.as_view({'get':'list','post':'create'})),

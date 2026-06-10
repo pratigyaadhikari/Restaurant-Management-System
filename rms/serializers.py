@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Category, Table, Food
+from .models import Category, Table, Food, Order, OrderItem
 
 
 class CategoryModelSerializer(serializers.ModelSerializer):
@@ -46,6 +46,42 @@ class FoodModelSerializer(serializers.ModelSerializer):
     def get_price_with_discount(self, food:Food):
         return food.price * 0.30 + food.price
     
+  
+class OrderItemModelSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = OrderItem
+        fields = ['food']
+        
+    
+class OrderModelSerializer(serializers.ModelSerializer):
+    user = serializers.HiddenField(default = serializers.CurrentUserDefault())
+    item = OrderItemModelSerializer(many=True)
+    status = serializers.CharField(read_only = True)
+    payment_status = serializers.CharField(read_only = True)
+    total_price = serializers.IntegerField(read_only = True)
+    
+    class Meta:
+        model = Order    
+        fields = ['id','user','total_price','status','payment_status','item']
+    
+    def create(self, validated_data):
+        items = validated_data.pop('item')
+        total_price = 0
+        for item in items:
+            food_item = item.get('food')        #food_item = 3840
+            total_price += food_item.price
+        order = Order.objects.create(total_price=total_price, **validated_data)
+        for item in items:
+            OrderItem.objects.create(order = order, food = item.get('food'))
+        return order
+        
+# validated_data = {}
+# items = {"item": [{"food":2840}]}  {
+ 
+
+
+
 # class CategorySerializer(serializers.Serializer):
     # id = serializers.IntegerField(read_only = True)
     # name = serializers.CharField()
@@ -60,21 +96,21 @@ class FoodModelSerializer(serializers.ModelSerializer):
     #     return instance
         
         
-class TableSerializer(serializers.Serializer):
-    id = serializers.IntegerField(read_only = True)
-    number = serializers.CharField()
-    capacity = serializers.CharField()
-    is_available = serializers.BooleanField()
+# class TableSerializer(serializers.Serializer):
+#     id = serializers.IntegerField(read_only = True)
+#     number = serializers.CharField()
+#     capacity = serializers.CharField()
+#     is_available = serializers.BooleanField()
     
-    def create(self, validated_data):
-        table = Table.objects.create(**validated_data)
-        return table
+#     def create(self, validated_data):
+#         table = Table.objects.create(**validated_data)
+#         return table
     
-    def update(self, instance, validated_data):
-        instance.number = validated_data.get('number', instance.number)
-        instance.capacity = validated_data.get('capacity', instance.capacity)
-        instance.is_available = validated_data.get('is_available', instance.is_available)
-        instance.save()
-        return instance
+#     def update(self, instance, validated_data):
+#         instance.number = validated_data.get('number', instance.number)
+#         instance.capacity = validated_data.get('capacity', instance.capacity)
+#         instance.is_available = validated_data.get('is_available', instance.is_available)
+#         instance.save()
+#         return instance
     
     

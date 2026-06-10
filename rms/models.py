@@ -48,8 +48,8 @@ class Order(models.Model):
    
     
 class OrderItem(models.Model):
-    order = models.ForeignKey(Order, on_delete=models.PROTECT)
-    food = models.ForeignKey(Food, on_delete=models.PROTECT)
+    order = models.ForeignKey(Order, on_delete=models.PROTECT, related_name='item')
+    food = models.ForeignKey(Food, on_delete=models.PROTECT, related_name='item')
     
     def __str__(self):
         return f"{self.food.name} in Order {self.order.id}"

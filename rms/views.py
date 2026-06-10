@@ -1,9 +1,9 @@
 from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-from .models import Category, Table, OrderItem, Food
+from .models import Category, Table, OrderItem, Food,Order
 # from .serializer import CategorySerializer, TableSerializer
-from .serializers import CategoryModelSerializer, TableModelSerializer, FoodModelSerializer
+from .serializers import CategoryModelSerializer, TableModelSerializer, FoodModelSerializer, OrderModelSerializer
 from .pagination import CategoryPagination, TablePagination, FoodPagination
 from rest_framework import filters
 from django_filters.rest_framework import DjangoFilterBackend
@@ -54,7 +54,15 @@ class FoodModelviewset(viewsets.ModelViewSet):
     search_fields = ['name']    #if tuple ('name',) ma name rakhni ho vane euta field matra rakhda field paxi (,) yo rakhni dherai vayo vane rakhna pardaina ('name','price')
     # filterset_fields = ['category']   #if  class create nagare fields ma directly add garna this one
     filterset_class = FoodFilter #manually class create garexa vane yo use garni
+    permission_classes = [IsAuth]
+  
+class OrderModelviewset(viewsets.ModelViewSet):
+    queryset = Order.objects.prefetch_related('item').all()
+    serializer_class = OrderModelSerializer
+    pagination_class = FoodPagination
+    permission_classes = [IsAuth]
     
+
     
 # Viewset:
 
