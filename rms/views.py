@@ -1,10 +1,11 @@
 from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-from .models import Category, Table, OrderItem, Food,Order
+from .models import Category, Table, OrderItem, Food,Order, Reservation
 # from .serializer import CategorySerializer, TableSerializer
-from .serializers import CategoryModelSerializer, TableModelSerializer, FoodModelSerializer, OrderModelSerializer
-from .pagination import CategoryPagination, TablePagination, FoodPagination
+from .serializers import CategoryModelSerializer, TableModelSerializer, FoodModelSerializer, OrderModelSerializer,ReservationModelSerializer
+    
+from .pagination import CategoryPagination, TablePagination, FoodPagination, OrderPagination, ReservationPagination
 from rest_framework import filters
 from django_filters.rest_framework import DjangoFilterBackend
 from .filter import FoodFilter
@@ -59,7 +60,13 @@ class FoodModelviewset(viewsets.ModelViewSet):
 class OrderModelviewset(viewsets.ModelViewSet):
     queryset = Order.objects.prefetch_related('item').all()
     serializer_class = OrderModelSerializer
-    pagination_class = FoodPagination
+    pagination_class = OrderPagination
+    permission_classes = [IsAuth]
+    
+class ReservationModelViewset(viewsets.ModelViewSet):
+    queryset = Reservation.objects.select_related('user','table').all()
+    serializer_class = ReservationModelSerializer
+    pagination_class = ReservationPagination
     permission_classes = [IsAuth]
     
 

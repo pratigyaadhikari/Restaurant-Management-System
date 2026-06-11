@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Category, Table, Food, Order, OrderItem
+from .models import Category, Table, Food, Order, OrderItem, Reservation
 
 
 class CategoryModelSerializer(serializers.ModelSerializer):
@@ -80,6 +80,26 @@ class OrderModelSerializer(serializers.ModelSerializer):
 # items = {"item": [{"food":2840}]}  {
  
 
+class ReservationModelSerializer(serializers.ModelSerializer):
+    user = serializers.HiddenField(default = serializers.CurrentUserDefault())
+    table_id = serializers.PrimaryKeyRelatedField(queryset=Table.objects.all(),source='table')
+    table = serializers.StringRelatedField(read_only=True)
+    
+    class Meta:
+        model = Reservation
+        fields = ['id','user','table_id','table','time','total_users']
+    
+    def validate(self, data):
+        table = data['table']
+        time = data['time']
+
+        if Reservation.objects.filter(table=table, time=time).exists():
+            raise serializers.ValidationError(
+                {"table": "This table is already reserved for that time."}
+            )
+
+        return data
+    
 
 
 # class CategorySerializer(serializers.Serializer):
