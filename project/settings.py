@@ -158,3 +158,16 @@ SPECTACULAR_SETTINGS = {
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': False,
 }
+
+
+# EMAIL_HOST = 'sandbox.smtp.mailtrap.io'
+EMAIL_HOST_USER = '94ca4da5d75812'
+EMAIL_HOST_PASSWORD = '1850342b994168'
+EMAIL_PORT = '587'
+EMAIL_USE_TLS = True
+
+ANYMAIL = {
+  "MAILTRAP_API_TOKEN": "3b2d912c20d74b476fbdb513db12866b",
+  "MAILTRAP_SANDBOX_ID": 4713427,
+}
+EMAIL_BACKEND = "anymail.backends.mailtrap.EmailBackend"
