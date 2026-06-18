@@ -44,12 +44,12 @@ class OrderItemAdmin(admin.ModelAdmin):
 admin.site.register(OrderItem,OrderItemAdmin)
 
 
-@admin.register(Payment)
-class PaymentAdmin(admin.ModelAdmin):
-    list_display = ['id','order','payment_method']
-    list_filter = ['payment_method']
-    search_fields = ['order__id']
-    list_per_page = 10
+# @admin.register(Payment)
+# class PaymentAdmin(admin.ModelAdmin):
+#     list_display = ['id','order','payment_method']
+#     list_filter = ['payment_method']
+#     search_fields = ['order__id']
+#     list_per_page = 10
 
 
 @admin.register(Reservation)

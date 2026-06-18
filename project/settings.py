@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rms",
     "user",
-    
+    "payment",
     
     "rest_framework",
     'rest_framework.authtoken',
@@ -159,15 +159,19 @@ SPECTACULAR_SETTINGS = {
     'SERVE_INCLUDE_SCHEMA': False,
 }
 
-
-# EMAIL_HOST = 'sandbox.smtp.mailtrap.io'
-EMAIL_HOST_USER = '94ca4da5d75812'
-EMAIL_HOST_PASSWORD = '1850342b994168'
-EMAIL_PORT = '587'
-EMAIL_USE_TLS = True
+EMAIL_HOST = os.getenv('EMAIL_HOST')
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
+EMAIL_PORT = os.getenv('EMAIL_PORT')
+EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS')
 
 ANYMAIL = {
-  "MAILTRAP_API_TOKEN": "3b2d912c20d74b476fbdb513db12866b",
-  "MAILTRAP_SANDBOX_ID": 4713427,
+  "MAILTRAP_API_TOKEN": os.getenv('MAILTRAP_API_TOKEN'),
+  "MAILTRAP_SANDBOX_ID": os.getenv('MAILTRAP_SANDBOX_ID'),
 }
 EMAIL_BACKEND = "anymail.backends.mailtrap.EmailBackend"
+
+
+KHALTI_SECRET_KEY = os.getenv('KHALTI_SECRET_KEY')
+KHALTI_INITIATE_URL = os.getenv('KHALTI_INITIATE_URL')
+KHALTI_LOOKUP_URL = os.getenv('KHALTI_LOOKUP_URL')

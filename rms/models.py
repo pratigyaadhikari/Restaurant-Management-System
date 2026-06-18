@@ -54,18 +54,22 @@ class OrderItem(models.Model):
     def __str__(self):
         return f"{self.food.name} in Order {self.order.id}"
     
-class Payment(models.Model):
-    PAYMENT_METHOD = [
-        ('C', 'Cash'),
-        ('K','Khalti'),
-        ('E','Esewa'),
-        ('F','Fonepay')
-    ]
-    order = models.ForeignKey(Order,on_delete=models.CASCADE)
-    payment_method = models.CharField(max_length=1,choices=PAYMENT_METHOD)
-    
-    def __str__(self):
-        return f"Payment for Order {self.order.id}"
+# class Payment(models.Model):
+#     PAYMENT_METHOD = [
+#         ('C', 'Cash'),
+#         ('K','Khalti'),
+#         ('E','Esewa'),
+#         ('F','Fonepay')
+#     ]
+#     # order = models.ForeignKey(Order,on_delete=models.CASCADE)
+#     order = models.OneToOneField(Order, on_delete=models.CASCADE, related_name="payment")
+#     payment_method = models.CharField(max_length=1,choices=PAYMENT_METHOD, )
+#     pidx = models.CharField(max_length=22, unique=True, null=True, blank=True)
+#     transaction_id = models.CharField(max_length=100, null=True, blank = True)
+#     total_amount = models.FloatField(default=0.0)
+#     status = models.CharField(max_length=15, default='Pending')
+#     def __str__(self):
+#         return f"Payment for Order {self.order.id} - {self.order.user} - {self.order.status}"
  
 class Reservation(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
